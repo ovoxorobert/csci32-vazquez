@@ -1,8 +1,9 @@
 'use client'
 
 import { ReactNode } from 'react'
-import { Size } from './size'
-import { Variant } from './variant'
+import { getSizeStyles, Size } from './size'
+import { getVariantBackgroundStyles, getVariantOutlineStyles, Variant } from './variant'
+import { getCommonStyles } from './tokens'
 
 interface ButtonProps {
   children: ReactNode
@@ -21,34 +22,12 @@ export const Button = ({
   size = Size.MEDIUM,
   variant = Variant.PRIMARY,
 }: ButtonProps) => {
-  let sizeCssClasses = ''
-  switch (size) {
-    case Size.SMALL:
-      sizeCssClasses = 'px-4 py-2 rounded shadow'
-      break
-    case Size.MEDIUM:
-      sizeCssClasses = 'px-6 py-3 rounded-md shadow'
-      break
-    case Size.LARGE:
-      sizeCssClasses = 'px-8 py-4 rounded-lg shadow'
-      break
-  }
+  const sizeCssClasses = getSizeStyles(size)
+  const variantBackgroundCssClasses = getVariantBackgroundStyles(variant)
+  const variantOutlineCssClasses = getVariantOutlineStyles(variant)
+  const commonCssClasses = getCommonStyles()
 
-  let variantCssClasses = ''
-  switch (variant) {
-    case Variant.PRIMARY:
-      variantCssClasses = 'bg-gray-400 outline-gray-400 hover:bg-gray-600 active:bg-gray-700'
-      break
-    case Variant.SECONDARY:
-      variantCssClasses = 'bg-gray-400 outline-gray-400 hover:bg-gray-600 active:bg-gray-700'
-      break
-    case Variant.TERTIARY:
-      variantCssClasses = 'bg-gray-400 outline-gray-400 hover:bg-gray-600 active:bg-gray-700'
-      break
-  }
-  const commonCssClasses =
-    'flex items-center justify-center text-white focus:outline outline-offset-2 transition-colors'
-  const completedCssClasses = `${sizeCssClasses} ${variantCssClasses} ${className} ${commonCssClasses}`
+  const completedCssClasses = `${sizeCssClasses} ${variantBackgroundCssClasses} ${variantOutlineCssClasses} ${className} ${commonCssClasses}`
   return href ? (
     <a href={href} className={completedCssClasses}>
       {children}
