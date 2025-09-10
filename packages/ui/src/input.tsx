@@ -1,6 +1,12 @@
 import { HTMLInputTypeAttribute } from 'react'
 import { getInputSizeStyles, Size } from './size'
-import { getVariantBorderStyles, getVariantInputTextStyles, getVariantOutlineStyles, Variant } from './variant'
+import {
+  getVariantBorderStyles,
+  getVariantButtonTextStyles,
+  getVariantInputTextStyles,
+  getVariantOutlineStyles,
+  Variant,
+} from './variant'
 import { getCommonStyles } from './tokens'
 
 interface InputProps {

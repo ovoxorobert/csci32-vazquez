@@ -40,10 +40,21 @@ export function getVariantBorderStyles(variant: Variant) {
 export function getVariantInputTextStyles(variant: Variant) {
   switch (variant) {
     case Variant.PRIMARY:
-      return 'bg-gray-400 text-purple-600 placeholder-green-400'
+      return 'text-black placeholder-green-400'
     case Variant.SECONDARY:
-      return 'bg-gray-400 text-black placeholder-red-400'
+      return 'text-black placeholder-red-400'
     case Variant.TERTIARY:
-      return 'bg-gray-400 text-black placeholder-blue-400'
+      return 'text-black placeholder-blue-400'
+  }
+}
+
+export function getVariantButtonTextStyles(variant: Variant) {
+  switch (variant) {
+    case Variant.PRIMARY:
+      return 'text-white placeholder-green-400'
+    case Variant.SECONDARY:
+      return 'text-white placeholder-red-400'
+    case Variant.TERTIARY:
+      return 'text-white placeholder-blue-400'
   }
 }
