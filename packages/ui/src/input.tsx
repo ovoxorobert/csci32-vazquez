@@ -1,6 +1,12 @@
 import { HTMLInputTypeAttribute } from 'react'
 import { getInputSizeStyles, Size } from './size'
-import { getVariantBorderStyles, getVariantInputTextStyles, getVariantOutlineStyles, Variant } from './variant'
+import {
+  getVariantBorderStyles,
+  getVariantButtonTextStyles,
+  getVariantInputTextStyles,
+  getVariantOutlineStyles,
+  Variant,
+} from './variant'
 import { getCommonStyles } from './tokens'
 
 interface InputProps {
@@ -13,6 +19,7 @@ interface InputProps {
   defaultValue?: any
   name: string
   id: string
+  min: number
 }
 
 export default function Input({
@@ -41,6 +48,7 @@ export default function Input({
       placeholder={placeholder}
       type={type}
       value={value}
+      min={0}
       onChange={setValue ? (newValue) => setValue(newValue.currentTarget.value) : () => {}}
     />
   )

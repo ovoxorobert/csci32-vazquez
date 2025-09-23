@@ -21,6 +21,7 @@ export default function ButtonPage() {
             name="name"
             id="name"
             placeholder="Full Name"
+            min={0}
           />
           <Button
             onClick={() => alert(`You've enetered "${name}" is this correct?`)}
@@ -39,6 +40,7 @@ export default function ButtonPage() {
             name="email"
             id="email"
             placeholder="eMail"
+            min={0}
           />
           <Button onClick={() => alert(`You've entered "${email}" is this correct?`)} variant={Variant.SECONDARY}>
             Submit
@@ -53,6 +55,7 @@ export default function ButtonPage() {
             name="number"
             id="number"
             placeholder="Phone Number"
+            min={0}
           />
           <Button
             onClick={() => alert(`You've entered "${number}" is this correct?`)}
