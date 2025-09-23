@@ -2,5 +2,15 @@
   "semi": false,
   "singleQuote": true,
   "tabWidth": 2,
-  "useTabs": false
+  "useTabs": false,
+  "printWidth": 80,
+  "plugins": ["prettier-plugin-prisma"],
+  "overrides": [
+    {
+      "files": "*.prisma",
+      "options": {
+        "parser": "prisma"
+      }
+    }
+  ]
 }
