@@ -19,6 +19,7 @@ interface InputProps {
   defaultValue?: any
   name: string
   id: string
+  min: number
 }
 
 export default function Input({
@@ -47,6 +48,7 @@ export default function Input({
       placeholder={placeholder}
       type={type}
       value={value}
+      min={0}
       onChange={setValue ? (newValue) => setValue(newValue.currentTarget.value) : () => {}}
     />
   )

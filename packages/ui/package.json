@@ -17,6 +17,7 @@
     "./variant": "./src/variant.ts",
     "./code": "./src/code.tsx",
     "./tokens": "./src/tokens.ts",
+    "./getRandomInt": "./src/getRandomInt.ts",
     "./input": "./src/input.tsx",
     "./*": "./dist/*.js"
   },
