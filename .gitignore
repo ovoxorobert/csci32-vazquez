@@ -5,3 +5,4 @@ dist
 .turbo
 #db
 *.env
+*.pem
