@@ -15,11 +15,11 @@ interface InputProps {
   placeholder?: string
   type?: HTMLInputTypeAttribute
   value?: any
-  setValue: (newValue: any) => void
+  setValue?: (newValue: any) => void
   defaultValue?: any
-  name: string
-  id: string
-  min: number
+  name?: string
+  id?: string
+  min?: number | string
 }
 
 export default function Input({
@@ -49,7 +49,11 @@ export default function Input({
       type={type}
       value={value}
       min={0}
-      onChange={setValue ? (newValue) => setValue(newValue.currentTarget.value) : () => {}}
+      onChange={
+        setValue
+          ? (newValue) => setValue(newValue.currentTarget.value)
+          : () => {}
+      }
     />
   )
 }

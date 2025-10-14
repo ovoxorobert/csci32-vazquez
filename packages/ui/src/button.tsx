@@ -2,13 +2,19 @@
 
 import { ReactNode } from 'react'
 import { getSizeStyles, Size } from './size'
-import { getVariantBackgroundStyles, getVariantButtonTextStyles, getVariantOutlineStyles, Variant } from './variant'
+import {
+  getVariantBackgroundStyles,
+  getVariantButtonTextStyles,
+  getVariantOutlineStyles,
+  Variant,
+} from './variant'
 import { getCommonStyles } from './tokens'
 
 interface ButtonProps {
   children: ReactNode
   className?: string
   href?: string
+  type?: string
   onClick?: () => void
   size?: Size
   variant?: Variant
