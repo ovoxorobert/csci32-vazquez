@@ -2,9 +2,11 @@
 import { Button } from '@repo/ui/button'
 import { GuessingGameMenuProps } from './page'
 import { FormEventHandler, useState } from 'react'
-import Input from '@repo/ui/input'
+import { Input } from '@repo/ui/input'
 
-export default function RandomNumberGameMenu({ startGame }: GuessingGameMenuProps) {
+export default function RandomNumberGameMenu({
+  startGame,
+}: GuessingGameMenuProps) {
   const [showSettings, setShowSettings] = useState(false)
   const [guess, setGuess] = useState(0)
 
@@ -56,8 +58,13 @@ export default function RandomNumberGameMenu({ startGame }: GuessingGameMenuProp
       ) : (
         <div className="flex flex-col gap-4">
           <header className="flex flex-col gap-5">
-            <h1 className="text-2xl font-bold">Welcome to the random number guessing game!</h1>
-            <p>The rules are simple just guess the correct number between the number and chances you pick!</p>
+            <h1 className="text-2xl font-bold">
+              Welcome to the random number guessing game!
+            </h1>
+            <p>
+              The rules are simple just guess the correct number between the
+              number and chances you pick!
+            </p>
             <p>You win absouletly nothing!</p>
             <p>JUST HAVE FUN!</p>
           </header>

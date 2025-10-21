@@ -1,6 +1,6 @@
 'use client'
 import { Button } from '@repo/ui/button'
-import Input from '@repo/ui/input'
+import { Input } from '@repo/ui/input'
 import { Size } from '@repo/ui/size'
 import { Variant } from '@repo/ui/variant'
 import { useState } from 'react'
@@ -42,7 +42,10 @@ export default function ButtonPage() {
             placeholder="eMail"
             min={0}
           />
-          <Button onClick={() => alert(`You've entered "${email}" is this correct?`)} variant={Variant.SECONDARY}>
+          <Button
+            onClick={() => alert(`You've entered "${email}" is this correct?`)}
+            variant={Variant.SECONDARY}
+          >
             Submit
           </Button>
         </div>

@@ -6,6 +6,9 @@ import { fileURLToPath } from 'node:url'
 import autoLoad from '@fastify/autoload'
 import { dirname, join } from 'node:path'
 import { registerGraphQL } from './utils/graphql'
+
+import fastifyCors from '@fastify/cors'
+
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
@@ -26,6 +29,12 @@ const fastify = Fastify({
       : true,
 })
 
+void fastify.register(fastifyCors, {
+  origin: 'http://localhost:3000',
+  credentials: true,
+  methods: ['GET', 'POST', 'OPTIONS'],
+})
+
 void fastify.register(autoLoad, {
   dir: join(__dirname, 'plugins'),
   forceESM: true,
@@ -37,7 +46,7 @@ void fastify.register(autoLoad, {
 const start = async () => {
   try {
     await registerGraphQL(fastify)
-    await fastify.listen({ port: 4000 })
+    await fastify.listen({ port: 4000, host: '0.0.0.0' })
   } catch (err) {
     fastify.log.error(err)
     process.exit(1)

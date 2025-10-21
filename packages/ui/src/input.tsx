@@ -1,59 +1,51 @@
-import { HTMLInputTypeAttribute } from 'react'
+import React, { forwardRef } from 'react'
 import { getInputSizeStyles, Size } from './size'
+import { HTMLInputTypeAttribute } from 'react'
 import {
   getVariantBorderStyles,
-  getVariantButtonTextStyles,
   getVariantInputTextStyles,
   getVariantOutlineStyles,
   Variant,
 } from './variant'
 import { getCommonStyles } from './tokens'
 
-interface InputProps {
+export interface InputProps
+  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> {
   variant?: Variant
   size?: Size
-  placeholder?: string
-  type?: HTMLInputTypeAttribute
-  value?: any
   setValue?: (newValue: any) => void
-  defaultValue?: any
-  name?: string
-  id?: string
-  min?: number | string
 }
 
-export default function Input({
-  variant = Variant.PRIMARY,
-  size = Size.MEDIUM,
-  value,
-  name,
-  id,
-  defaultValue,
-  setValue,
-  type = 'text',
-  placeholder,
-}: InputProps) {
-  const sizeCssClasses = getInputSizeStyles(size)
-  const variantOutlineCssClasses = getVariantOutlineStyles(variant)
-  const variantBorderCssClasses = getVariantBorderStyles(variant)
-  const variantInputTextCssClasses = getVariantInputTextStyles(variant)
-  const commonCssClasses = getCommonStyles()
+export const Input = forwardRef<HTMLInputElement, InputProps>(
+  (
+    {
+      variant = Variant.PRIMARY,
+      size = Size.MEDIUM,
+      setValue,
+      onChange,
+      className,
+      ...props
+    },
+    ref,
+  ) => {
+    const sizeCssClasses = getInputSizeStyles(size)
+    const variantOutlineCssClasses = getVariantOutlineStyles(variant)
+    const variantBorderCssClasses = getVariantBorderStyles(variant)
+    const variantInputTextCssClasses = getVariantInputTextStyles(variant)
+    const commonCssClasses = getCommonStyles()
 
-  return (
-    <input
-      className={`${sizeCssClasses} ${variantBorderCssClasses} ${variantInputTextCssClasses} ${variantOutlineCssClasses} ${commonCssClasses}`}
-      name={name}
-      id={id}
-      defaultValue={defaultValue}
-      placeholder={placeholder}
-      type={type}
-      value={value}
-      min={0}
-      onChange={
-        setValue
-          ? (newValue) => setValue(newValue.currentTarget.value)
-          : () => {}
-      }
-    />
-  )
-}
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (setValue) setValue(e.target.value)
+      if (onChange) onChange(e)
+    }
+
+    return (
+      <input
+        ref={ref}
+        className={`${sizeCssClasses} ${variantBorderCssClasses} ${variantInputTextCssClasses} ${variantOutlineCssClasses} ${commonCssClasses} ${className ?? ''}`}
+        onChange={handleChange}
+        {...props}
+      />
+    )
+  },
+)

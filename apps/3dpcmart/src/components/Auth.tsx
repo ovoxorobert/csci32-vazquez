@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useAuth } from '../hooks/useAuth'
 import { Button } from '@repo/ui/button'
-import Input from '@repo/ui/input'
+import { Input } from '@repo/ui/input'
 import { Size } from '@repo/ui/size'
 import { Variant } from '@repo/ui/variant'
 
