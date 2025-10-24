@@ -7,12 +7,16 @@
     ".": "./src/client.ts"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "seed": "prisma db seed"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
+  "prisma": {
+    "seed": "node -r ts-node/register prisma/seed.ts"
+  },
   "devDependencies": {
     "@types/node": "^24.5.2",
     "prettier-plugin-prisma": "^5.0.0",

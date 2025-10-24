@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,10 +7,47 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum RoleName {
+  Admin
+  Basic
+  Viewer
+}
+
+enum PermissionName {
+  UserRead
+  UserWrite
+}
+
 model User {
-  user_id       String    @id @default(cuid())
+  user_id       String   @id @default(cuid())
   name          String?
-  email         String?   @unique
+  email         String?  @unique
   emailVerified DateTime?
-  passwordHash String?
+  passwordHash  String?
+  role_id        String?
+  role          Role?    @relation(fields: [role_id], references: [role_id])
+}
+
+model Role {
+  role_id     String           @id @default(cuid())
+  name        RoleName     @unique
+  users       User[]
+  role_permissions RolePermission[]
+}
+
+model Permission {
+  permission_id String           @id @default(cuid())
+  name          PermissionName   @unique
+  roles         RolePermission[]
+}
+
+model RolePermission {
+  role_id        String
+  permission_id  String
+
+  role        Role        @relation(fields: [role_id], references: [role_id])
+  permission  Permission  @relation(fields: [permission_id], references: [permission_id])
+
+  @@id([role_id, permission_id]) // composite primary key
+  @@unique([role_id, permission_id])
 }
