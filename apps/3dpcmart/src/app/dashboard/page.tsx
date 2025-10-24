@@ -12,7 +12,6 @@ export default function DashboardPage() {
     router.push('/welcome')
   }
 
-  // Prevent hydration mismatch by only rendering user info after hydration
   if (!isHydrated) {
     return (
       <div className="min-h-screen bg-gray-50">
@@ -35,7 +34,6 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <header className="bg-white shadow">
         <div className="container mx-auto px-4 py-6 flex justify-between items-center">
           <div>
@@ -55,23 +53,21 @@ export default function DashboardPage() {
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto">
-          {/* Welcome Card */}
           <div className="bg-white rounded-lg shadow-md p-8 mb-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">
               Welcome back{user?.name ? `, ${user.name}` : ''}! 🎉
             </h2>
             <div className="space-y-2 text-gray-600">
               <p>
-                You've successfully signed in. Your authentication token is
+                {"You've successfully signed in. Your authentication token is"}
                 stored securely and will be used for all API requests.
               </p>
               {user && (
                 <div className="mt-4 p-4 bg-gray-50 rounded-md">
                   <h3 className="font-semibold text-gray-900 mb-2">
-                    Your Account Details:
+                    {'Your Account Details:'}
                   </h3>
                   <div className="space-y-1 text-sm">
                     {user.name && (
@@ -94,7 +90,6 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* Quick Stats */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <div className="bg-white rounded-lg shadow-md p-6">
               <div className="text-indigo-600 text-3xl mb-2">🔐</div>
@@ -109,7 +104,8 @@ export default function DashboardPage() {
               <h3 className="text-lg font-semibold text-gray-900 mb-1">
                 Authenticated
               </h3>
-              <p className="text-gray-600 text-sm">You're logged in</p>
+
+              <p className="text-gray-600 text-sm">{"You're logged in"}</p>
             </div>
 
             <div className="bg-white rounded-lg shadow-md p-6">
@@ -121,10 +117,9 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* Info Section */}
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
             <h3 className="text-lg font-semibold text-blue-900 mb-2">
-              ℹ️ What's Next?
+              {"ℹ️ What's Next?"}
             </h3>
             <ul className="space-y-2 text-blue-800">
               <li>
@@ -135,12 +130,13 @@ export default function DashboardPage() {
               </li>
               <li>
                 <p>
-                  Your session persists across browser refreshes *stored in
-                  localStorage*
+                  {
+                    'Your session persists across browser refreshes (stored locally'
+                  }
                 </p>
               </li>
               <li>
-                <p>Click 'Sign Out' to clear your session...</p>
+                <p>{"Click 'Sign Out' to clear your session..."}</p>
               </li>
             </ul>
           </div>
