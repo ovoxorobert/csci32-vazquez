@@ -43,7 +43,7 @@ export default function RandomNumberGame({
     <div
       className={`${maxGuessCount - 1 === guessCount ? 'bg-red-50' : ''}
 ${maxGuessCount === guessCount ? 'bg-red-200' : ''}
-${hasWon ? '!bg-green-100' : ''}
+${hasWon ? 'bg-green-100!' : ''}
 p-10 rounded-md transition-color`}
     >
       {hasWon ? (

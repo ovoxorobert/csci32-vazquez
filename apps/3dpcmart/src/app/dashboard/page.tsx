@@ -128,16 +128,19 @@ export default function DashboardPage() {
             </h3>
             <ul className="space-y-2 text-blue-800">
               <li>
-                • All your GraphQL requests will now include your authentication
-                token
+                <p>
+                  All your GraphQL requests will now include your authentication
+                  token
+                </p>
               </li>
               <li>
-                • Your session persists across browser refreshes (stored in
-                localStorage)
+                <p>
+                  Your session persists across browser refreshes *stored in
+                  localStorage*
+                </p>
               </li>
               <li>
-                • Click "Sign Out" to clear your session and return to the
-                welcome page
+                <p>Click 'Sign Out' to clear your session...</p>
               </li>
             </ul>
           </div>
