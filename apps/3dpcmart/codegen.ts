@@ -1,7 +1,7 @@
 import type { CodegenConfig } from '@graphql-codegen/cli'
 
 const config: CodegenConfig = {
-  schema: '../../backend/src/schema.graphql', // Your backend GraphQL endpoint
+  schema: './schema.graphql', // Your backend GraphQL endpoint
   documents: ['src/**/*.{ts,tsx}', '!src/generated/**/*'],
   generates: {
     'schema.graphql': {
