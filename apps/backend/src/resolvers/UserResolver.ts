@@ -8,10 +8,12 @@ import {
   ID,
   Arg,
   Mutation,
+  Authorized,
 } from 'type-graphql'
 import type { Context } from '@/utils/graphql'
 import { AuthPayload, SignUpInput } from './types/AuthTypes'
 import { SignInInput } from './types/SignInTypes'
+import { PermissionName } from 'csci32-db/permissions'
 
 @ObjectType()
 class User {
@@ -27,6 +29,7 @@ class User {
 
 @Resolver()
 export class UserResolver {
+  @Authorized(PermissionName.UserRead)
   @Query(() => [User])
   findManyUsers(@Ctx() { userService }: Context) {
     return userService.findMany()

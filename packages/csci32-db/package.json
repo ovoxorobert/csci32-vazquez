@@ -3,8 +3,16 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "commonjs",
   "exports": {
-    ".": "./src/client.ts"
+    ".": {
+      "require": "./src/client.ts",
+      "types": "./src/client.ts"
+    },
+    "./permissions": {
+      "require": "./permissions.ts",
+      "types": "./permissions.ts"
+    }
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -13,7 +21,6 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
   "prisma": {
     "seed": "node -r ts-node/register prisma/seed.ts"
   },
