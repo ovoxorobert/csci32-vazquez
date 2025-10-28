@@ -1,6 +1,9 @@
 import type { SignUpInput } from '@/resolvers/types/AuthTypes'
+import type { FindManyUsersFilters } from '@/resolvers/types/FindManyUsersFilters'
+import type { FindManyUsersInput } from '@/resolvers/types/FindManyUsersInput'
+import { SortOrder } from '@/resolvers/types/SortOrder'
 import { comparePassword, hashPassword, signToken } from '@/utils/auth'
-import { PrismaClient, PermissionName, BASIC_ROLE_ID } from 'csci32-db'
+import { PrismaClient, PermissionName, BASIC_ROLE_ID, Prisma } from 'csci32-db'
 
 export interface UserServiceProps {
   prisma: PrismaClient
@@ -12,9 +15,44 @@ export class UserService {
   constructor({ prisma }: UserServiceProps) {
     this.prisma = prisma
   }
+  getOrderBy(params: FindManyUsersInput): Prisma.UserOrderByWithRelationInput {
+    const { sortColumn, sortDirection } = params
+    if (sortColumn) {
+      return { [sortColumn]: sortDirection ?? SortOrder.ASC }
+    }
+    return { name: SortOrder.ASC }
+  }
 
-  findMany() {
-    return this.prisma.user.findMany()
+  getUsersWhereClause(params: FindManyUsersInput): Prisma.UserWhereInput {
+    const { filters } = params
+    const where: Prisma.UserWhereInput = {}
+
+    if (filters?.query) {
+      where.OR = [
+        { name: { contains: filters.query, mode: 'insensitive' } },
+        { email: { contains: filters.query, mode: 'insensitive' } },
+      ]
+    }
+
+    return where
+  }
+
+  async findMany(params: FindManyUsersInput) {
+    const { skip = 0, take = 15 } = params
+    const orderBy = this.getOrderBy(params)
+    const where = this.getUsersWhereClause(params)
+
+    return this.prisma.user.findMany({
+      skip,
+      take,
+      orderBy,
+      where,
+    })
+  }
+
+  async getTotalUsers(filters: FindManyUsersFilters) {
+    const where = this.getUsersWhereClause({ filters })
+    return this.prisma.user.count({ where })
   }
 
   async createUser(params: SignUpInput) {
