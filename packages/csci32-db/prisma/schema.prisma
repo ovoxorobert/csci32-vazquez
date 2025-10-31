@@ -44,8 +44,10 @@ model Permission {
 model RolePermission {
   role_id        String
   permission_id  String
+
   role        Role        @relation(fields: [role_id], references: [role_id])
   permission  Permission  @relation(fields: [permission_id], references: [permission_id])
+
   @@id([role_id, permission_id]) // composite primary key
   @@unique([role_id, permission_id])
 }

@@ -1,34 +1,25 @@
+// apps/backend/src/resolvers/UserResolver.ts
+
 import 'reflect-metadata'
 import {
   Resolver,
   Query,
-  Field,
-  ObjectType,
   Ctx,
-  ID,
   Arg,
   Mutation,
   Authorized,
+  FieldResolver,
+  Root,
 } from 'type-graphql'
 import type { Context } from '@/utils/graphql'
 import { AuthPayload, SignUpInput } from './types/AuthTypes'
 import { SignInInput } from './types/SignInTypes'
-import { PermissionName } from 'csci32-db/permissions'
+import { PermissionName } from 'csci32-db'
 import { FindManyUsersInput } from './types/FindManyUsersInput'
+import { Role } from './types/Role'
+import { User } from './types/User'
 
-@ObjectType()
-class User {
-  @Field(() => ID)
-  user_id!: string
-
-  @Field(() => String, { nullable: true })
-  name?: string
-
-  @Field(() => String, { nullable: true })
-  email?: string
-}
-
-@Resolver()
+@Resolver(() => User)
 export class UserResolver {
   @Authorized([PermissionName.UserRead])
   @Query(() => [User])
@@ -72,5 +63,16 @@ export class UserResolver {
     }
     const { user, token } = await userService.authenticateUser(input)
     return { user, token }
+  } // === Field Resolver for Role ===
+
+  @FieldResolver(() => Role, { nullable: true })
+  async role(@Root() user: User, @Ctx() ctx: Context) {
+    if (!user.role_id) {
+      return null
+    }
+
+    return ctx.prisma.role.findUnique({
+      where: { role_id: user.role_id },
+    })
   }
 }

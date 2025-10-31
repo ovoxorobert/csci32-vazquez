@@ -1,4 +1,5 @@
 import { UserResolver } from '@/resolvers/UserResolver'
+import { RoleResolver } from '@/resolvers/RoleResolver'
 import { buildSchema, registerEnumType } from 'type-graphql'
 import { customAuthChecker } from '@/utils/authChecker'
 import { PermissionName, RoleName } from 'csci32-db'
@@ -28,7 +29,7 @@ registerEnumType(RoleName, {
   description: 'Enum representing valid roles for users',
 })
 
-const resolvers = [UserResolver] as NonEmptyArray<Function>
+const resolvers = [UserResolver, RoleResolver] as NonEmptyArray<Function>
 
 export interface Context {
   request: FastifyRequest
