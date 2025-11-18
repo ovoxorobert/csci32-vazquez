@@ -26,6 +26,10 @@ model User {
   passwordHash  String?
   role_id        String?
   role          Role?    @relation(fields: [role_id], references: [role_id])
+
+  comments      Comment[]
+
+  posts         Post[]
 }
 
 model Role {
@@ -50,4 +54,33 @@ model RolePermission {
 
   @@id([role_id, permission_id]) // composite primary key
   @@unique([role_id, permission_id])
+}
+
+model Post {
+  id        String    @id @default(cuid())
+  title     String
+  body      String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  // Author relationship
+  authorId  String
+  author    User      @relation(fields: [authorId], references: [user_id])
+
+  // Comments relationship
+  comments  Comment[]
+}
+
+model Comment {
+  id        String    @id @default(cuid())
+  body      String
+  createdAt DateTime  @default(now())
+
+  // Post relationship
+  postId    String
+  post      Post      @relation(fields: [postId], references: [id])
+
+  // Author relationship
+  authorId  String
+  author    User      @relation(fields: [authorId], references: [user_id])
 }
