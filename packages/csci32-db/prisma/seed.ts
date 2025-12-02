@@ -5,10 +5,62 @@ import { seedUsers } from './seeders/seedUsers'
 
 const prisma = new PrismaClient()
 
-// Function to handle the new post/comment seeding logic
+// Function to handle the new Product seeding logic
+async function seedProducts(prisma: PrismaClient) {
+  console.log('🛍️ Starting Product seed...')
+
+  await prisma.product.deleteMany()
+
+  // === Seeding Products ===
+  await prisma.product.createMany({
+    data: [
+      {
+        name: 'Labubu',
+        description:
+          '3D printed Labubu figure fits inside all standard PC cases.',
+        price: 199.99,
+        stock: 50,
+        sku: 'QTL-001',
+      },
+      {
+        name: 'SSD Holder',
+        description: '3D printer SSD Holder out of sight!',
+        price: 29.5,
+        stock: 500,
+        sku: 'QTL-002',
+      },
+      {
+        name: 'PCI Slot',
+        description: '#D printer PCI slot to hold HDMI',
+        price: 15.0,
+        stock: 120,
+        sku: 'QTL-003',
+      },
+      {
+        name: 'LCD Holder',
+        description: '3D Printed mini 11" LCD screen holder',
+        price: 499.0,
+        stock: 15,
+        sku: 'QTL-004',
+      },
+      {
+        name: 'Motherboard Hider',
+        description: '3D printed Motherboard layover hides all cables',
+        price: 45.99,
+        stock: 80,
+        sku: 'QTL-005',
+      },
+    ],
+  })
+
+  console.log('✅ Product seed completed. 5 products created.')
+}
+
+// Function to handle the Post/Comment seeding logic
 async function seedPostsAndComments(prisma: PrismaClient) {
   console.log('📝 Starting Post and Comment seed...')
 
+  // Clear existing content (children -> parents)
   await prisma.comment.deleteMany()
   await prisma.post.deleteMany()
 
@@ -21,6 +73,8 @@ async function seedPostsAndComments(prisma: PrismaClient) {
     )
     return
   }
+
+  // === Seeding Posts and Comments ===
 
   const post1 = await prisma.post.create({
     data: {
@@ -65,10 +119,13 @@ async function main() {
   await seedPermissions(prisma)
   const { adminRole, basicRole } = await seedRoles(prisma)
 
-  // 2. Seed users (needed for Post authorship)
+  // 2. Seed users (needed for Post and Product authorship later)
   await seedUsers(prisma, adminRole.role_id, basicRole.role_id)
 
-  // 3. Seed new Post and Comment data
+  // 3. Seed new Product data
+  await seedProducts(prisma)
+
+  // 4. Seed old Post and Comment data
   await seedPostsAndComments(prisma)
 
   console.log('✅ All seeds completed successfully!')

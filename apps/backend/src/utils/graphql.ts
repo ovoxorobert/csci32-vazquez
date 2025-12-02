@@ -1,6 +1,7 @@
 import { UserResolver } from '@/resolvers/UserResolver'
 import { RoleResolver } from '@/resolvers/RoleResolver'
-import { PostResolver } from '@/resolvers/PostResolver' // This import is used
+import { PostResolver } from '@/resolvers/PostResolver'
+import { ProductResolver } from '@/resolvers/ProductResolver'
 import { buildSchema, registerEnumType } from 'type-graphql'
 import { customAuthChecker } from '@/utils/authChecker'
 import { PermissionName, RoleName } from 'csci32-db'
@@ -14,12 +15,24 @@ import type {
 import { PrismaClient } from 'csci32-db'
 import { getBooleanEnvVar, getRequiredStringEnvVar } from '@/utils'
 import type { UserService } from '@/services/UserService'
+import type { ProductService } from '@/services/ProductService'
 import type { PostService } from '@/services/PostService'
 import mercurius from 'mercurius'
 import mercuriusLogging from 'mercurius-logging'
 
 const GRAPHQL_API_PATH = '/api/graphql'
 const GRAPHQL_DEPTH_LIMIT = 7
+
+export interface ServiceContainer {
+  userService: UserService
+  postService: PostService
+  productService: ProductService
+  prisma: PrismaClient
+}
+
+declare module 'fastify' {
+  interface FastifyInstance extends ServiceContainer {}
+}
 
 registerEnumType(PermissionName, {
   name: 'PermissionName',
@@ -35,6 +48,7 @@ const resolvers = [
   UserResolver,
   RoleResolver,
   PostResolver,
+  ProductResolver,
 ] as NonEmptyArray<Function>
 
 export interface Context {
@@ -42,6 +56,7 @@ export interface Context {
   reply: FastifyReply
   userService: UserService
   postService: PostService
+  productService: ProductService
   prisma: PrismaClient
   log: FastifyBaseLogger
 }
@@ -61,11 +76,14 @@ export async function registerGraphQL(fastify: FastifyInstance) {
     path: GRAPHQL_API_PATH,
     graphiql,
     queryDepth: GRAPHQL_DEPTH_LIMIT,
+
     context: (request: FastifyRequest, reply: FastifyReply): Context => ({
       request,
       reply,
+
       userService: fastify.userService,
       postService: fastify.postService,
+      productService: fastify.productService,
       prisma: fastify.prisma,
       log: fastify.log,
     }),

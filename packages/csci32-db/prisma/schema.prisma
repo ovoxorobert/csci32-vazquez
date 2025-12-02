@@ -1,86 +1,128 @@
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider = "postgresql"
+  url = env("DATABASE_URL")
 }
 
 enum RoleName {
-  Admin
-  Basic
-  Viewer
+  Admin
+  Basic
+  Viewer
 }
 
 enum PermissionName {
-  UserRead
-  UserWrite
+  UserRead
+  UserWrite
 }
 
 model User {
-  user_id       String   @id @default(cuid())
-  name          String?
-  email         String?  @unique
-  emailVerified DateTime?
-  passwordHash  String?
-  role_id        String?
-  role          Role?    @relation(fields: [role_id], references: [role_id])
+  user_id       String   @id @default(cuid())
+  name          String?
+  email         String?  @unique
+  emailVerified DateTime?
+  passwordHash  String?
+  role_id        String?
+  role          Role?    @relation(fields: [role_id], references: [role_id])
 
-  comments      Comment[]
 
-  posts         Post[]
+  comments      Comment[]
+
+
+  posts         Post[]
+
+  // New: User can write reviews
+  reviews       Review[]
 }
 
 model Role {
-  role_id     String           @id @default(cuid())
-  name        RoleName     @unique
-  users       User[]
-  role_permissions RolePermission[]
+  role_id     String           @id @default(cuid())
+  name        RoleName     @unique
+  users       User[]
+  role_permissions RolePermission[]
 }
 
 model Permission {
-  permission_id String           @id @default(cuid())
-  name          PermissionName   @unique
-  roles         RolePermission[]
+  permission_id String           @id @default(cuid())
+  name          PermissionName   @unique
+  roles         RolePermission[]
 }
 
 model RolePermission {
-  role_id        String
-  permission_id  String
+  role_id        String
+  permission_id  String
 
-  role        Role        @relation(fields: [role_id], references: [role_id])
-  permission  Permission  @relation(fields: [permission_id], references: [permission_id])
+  role        Role        @relation(fields: [role_id], references: [role_id])
+  permission  Permission  @relation(fields: [permission_id], references: [permission_id])
 
-  @@id([role_id, permission_id]) // composite primary key
-  @@unique([role_id, permission_id])
+  @@id([role_id, permission_id]) // composite primary key
+  @@unique([role_id, permission_id])
 }
 
 model Post {
-  id        String    @id @default(cuid())
-  title     String
-  body      String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id        String    @id @default(cuid())
+  title     String
+  body      String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 
-  // Author relationship
-  authorId  String
-  author    User      @relation(fields: [authorId], references: [user_id])
 
-  // Comments relationship
-  comments  Comment[]
+  authorId  String
+  author    User      @relation(fields: [authorId], references: [user_id])
+
+
+  comments  Comment[]
 }
 
 model Comment {
-  id        String    @id @default(cuid())
-  body      String
-  createdAt DateTime  @default(now())
+  id        String    @id @default(cuid())
+  body      String
+  createdAt DateTime  @default(now())
 
-  // Post relationship
-  postId    String
-  post      Post      @relation(fields: [postId], references: [id])
 
-  // Author relationship
-  authorId  String
-  author    User      @relation(fields: [authorId], references: [user_id])
+  postId    String
+  post      Post      @relation(fields: [postId], references: [id])
+
+
+  authorId  String
+  author    User      @relation(fields: [authorId], references: [user_id])
+}
+
+
+
+model Product {
+  id          String   @id @default(cuid())
+
+  name        String
+  description String
+
+  price       Float
+  stock       Int
+  sku         String   @unique
+
+  reviews     Review[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+
+model Review {
+    id        String    @id @default(cuid())
+    rating    Int       //1 to 5 stars
+    body      String?
+    createdAt DateTime  @default(now())
+
+    // Product relationship
+    productId String
+    product   Product   @relation(fields: [productId], references: [id])
+
+    // Author relationship
+    authorId  String
+    author    User      @relation(fields: [authorId], references: [user_id])
+
+    // Ensures a user can only review a product once (composite unique key)
+    @@unique([productId, authorId])
 }
