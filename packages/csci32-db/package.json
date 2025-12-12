@@ -33,6 +33,7 @@
   },
   "dependencies": {
     "@prisma/client": "^6.16.2",
+    "lucide-react": "^0.559.0",
     "typedi": "^0.10.0"
   }
 }
