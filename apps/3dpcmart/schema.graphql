@@ -17,6 +17,7 @@ input CreateProductInput {
   description: String!
   name: String!
   price: Float!
+  sku: String!
   stock: Int!
 }
 

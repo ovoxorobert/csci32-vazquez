@@ -3,7 +3,10 @@ import type { CodegenConfig } from '@graphql-codegen/cli'
 const LIVE_SCHEMA_URL = 'http://localhost:4000/api/graphql'
 
 const config: CodegenConfig = {
-  schema: LIVE_SCHEMA_URL,
+  schema:
+    process.env.NODE_ENV === 'production'
+      ? './schema.graphql'
+      : LIVE_SCHEMA_URL,
   documents: ['src/**/*.{ts,tsx}', '!src/generated/**/*'],
   generates: {
     './schema.graphql': {
