@@ -8,9 +8,7 @@ import { gqlClient } from '@/services/graphql-client'
 import { CREATE_PRODUCT_MUTATION } from '../../../../graphql/productMutations'
 
 // Define the fields required for the form
-type FormFields = CreateProductInput & {
-  sku: string
-}
+type FormFields = CreateProductInput
 
 const CreateProductPage = () => {
   const router = useRouter()
