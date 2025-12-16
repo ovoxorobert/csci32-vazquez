@@ -1,11 +1,16 @@
 import type { CodegenConfig } from '@graphql-codegen/cli'
 
+const LIVE_SCHEMA_URL = 'http://localhost:4000/api/graphql'
+
 const config: CodegenConfig = {
-  schema: './schema.graphql', // Your backend GraphQL endpoint
+  schema: LIVE_SCHEMA_URL,
   documents: ['src/**/*.{ts,tsx}', '!src/generated/**/*'],
   generates: {
-    'schema.graphql': {
+    './schema.graphql': {
       plugins: ['schema-ast'],
+      config: {
+        endpoint: LIVE_SCHEMA_URL,
+      },
     },
     'src/generated/': {
       preset: 'client',

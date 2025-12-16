@@ -3,13 +3,121 @@ type AuthPayload {
   user: UserDTO!
 }
 
+input CreateCommentForPostInput {
+  body: String!
+}
+
+input CreatePostInput {
+  body: String!
+  comments: [CreateCommentForPostInput!]
+  title: String!
+}
+
+input CreateProductInput {
+  description: String!
+  name: String!
+  price: Float!
+  stock: Int!
+}
+
+"""
+A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.This scalar is serialized to a string in ISO 8601 format and parsed from a string in ISO 8601 format.
+"""
+scalar DateTimeISO
+
+input FindManyUsersFilters {
+  query: String
+}
+
+input FindManyUsersInput {
+  filters: FindManyUsersFilters
+  skip: Int
+  sortColumn: String
+  sortDirection: SortOrder
+  take: Int
+}
+
+input ListProductsInput {
+  """Search term to filter products by name or description."""
+  search: String
+
+  """Number of items to skip (for pagination)."""
+  skip: Int = 0
+
+  """Field to sort by."""
+  sortBy: ProductSortField = CREATED_AT
+
+  """Sort direction."""
+  sortDirection: SortDirection = DESC
+
+  """Number of items to return."""
+  take: Int = 10
+}
+
 type Mutation {
+  createPost(input: CreatePostInput!): String!
+
+  """Creates a new product in the catalog (Admin required)."""
+  createProduct(input: CreateProductInput!): Product!
   signIn(input: SignInInput!): AuthPayload!
   signUp(input: SignUpInput!): AuthPayload!
 }
 
+type Permission {
+  name: String!
+  permission_id: ID!
+}
+
+type Product {
+  createdAt: DateTimeISO!
+  description: String!
+  id: ID!
+  name: String!
+  price: Float!
+  reviews: [Review!]
+  sku: String!
+  stock: Float!
+  updatedAt: DateTimeISO!
+}
+
+"""Fields available for sorting products."""
+enum ProductSortField {
+  CREATED_AT
+  NAME
+  PRICE
+}
+
 type Query {
-  findManyUsers: [User!]!
+  findManyUsers(params: FindManyUsersInput): [User!]!
+  helloPostWorld: String!
+
+  """Find a product by its unique ID."""
+  product(id: ID!): Product
+
+  """List products with optional sorting and pagination."""
+  products(input: ListProductsInput): [Product!]!
+  totalUsers(params: FindManyUsersInput): Float!
+}
+
+type Review {
+  author: User!
+  body: String
+  createdAt: DateTimeISO!
+  id: ID!
+  rating: Int!
+}
+
+type Role {
+  name: RoleName!
+  permissions: [Permission!]!
+  role_id: ID!
+}
+
+"""Enum representing valid roles for users"""
+enum RoleName {
+  Admin
+  Basic
+  Viewer
 }
 
 input SignInInput {
@@ -23,14 +131,28 @@ input SignUpInput {
   password: String!
 }
 
+"""The direction to sort the results (ASC or DESC)."""
+enum SortDirection {
+  ASC
+  DESC
+}
+
+"""Defines ascending or descending sort order."""
+enum SortOrder {
+  ASC
+  DESC
+}
+
 type User {
   email: String
   name: String
+  role: Role
   user_id: ID!
 }
 
 type UserDTO {
   email: String
   name: String
+  role: RoleName
   user_id: ID!
 }

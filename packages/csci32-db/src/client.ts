@@ -1,7 +1,6 @@
-export * from '../prisma/seeders/seedRoles'
-export * from '../prisma/seeders/seedPermissions'
-export * from '../prisma/seeders/seedUsers'
-
+export * from './seeders/seedRoles.js'
+export * from './seeders/seedPermissions.js'
+export * from './seeders/seedUsers.js'
 import { PrismaClient, PermissionName } from '@prisma/client'
 
 const globalForPrisma = global as unknown as { prisma: PrismaClient }

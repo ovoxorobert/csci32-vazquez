@@ -13,8 +13,8 @@ type AuthFormInputs = {
   password: string
 }
 
-export default function Auth() {
-  const { signUp, signIn, signOut, isLoading, error, clearError } = useAuth()
+export default function AuthForm() {
+  const { signUp, signIn, isLoading, error, clearError } = useAuth()
   const [isSignUpMode, setIsSignUpMode] = useState(false)
 
   const {
@@ -24,26 +24,22 @@ export default function Auth() {
   } = useForm<AuthFormInputs>()
 
   const onSubmit = async (data: AuthFormInputs) => {
+    clearError()
     if (isSignUpMode) {
-      const result = await signUp(data)
-      console.log('Signed up:', result)
+      await signUp(data)
     } else {
-      const result = await signIn({
-        email: data.email,
-        password: data.password,
-      })
-      console.log('Signed in:', result)
+      await signIn({ email: data.email, password: data.password })
     }
   }
 
   return (
-    <div className="max-w-md mx-auto mt-8 p-6 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-6 text-center">
-        {isSignUpMode ? 'Sign Up' : 'Sign In'}
+    <div className="max-w-md mx-auto p-8 bg-white rounded-xl shadow-2xl space-y-6">
+      <h2 className="text-2xl font-bold text-center text-gray-800">
+        {isSignUpMode ? 'Create Account' : 'Sign In'}
       </h2>
 
       {error && (
-        <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+        <div className="p-3 bg-red-100 border border-red-400 text-red-700 rounded">
           {error}
           <button
             onClick={clearError}
@@ -54,7 +50,7 @@ export default function Auth() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {isSignUpMode && (
           <Input
             type="text"
@@ -70,6 +66,7 @@ export default function Auth() {
           placeholder="Email"
           size={Size.LARGE}
           variant={Variant.PRIMARY}
+          className="w-full"
           {...register('email', { required: 'Email is required' })}
         />
         {errors.email && (
@@ -81,6 +78,7 @@ export default function Auth() {
           placeholder="Password"
           size={Size.LARGE}
           variant={Variant.PRIMARY}
+          className="w-full"
           {...register('password', {
             required: 'Password is required',
             minLength: { value: 6, message: 'At least 6 characters' },
@@ -90,37 +88,28 @@ export default function Auth() {
           <p className="text-red-500 text-sm">{errors.password.message}</p>
         )}
 
-        <div className="w-full">
+        <div className="w-full pt-2">
           <Button
             type="submit"
             size={Size.LARGE}
             variant={Variant.PRIMARY}
-            className="w-full"
+            className="w-full bg-indigo-500 hover:bg-indigo-700"
+            disabled={isLoading}
           >
-            {isLoading ? 'Loading...' : isSignUpMode ? 'Sign Up' : 'Sign In'}
+            {isLoading ? 'Processing...' : isSignUpMode ? 'Sign Up' : 'Sign In'}
           </Button>
         </div>
       </form>
 
-      <div className="mt-6 text-center">
+      <div className="mt-4 text-center">
         <button
           type="button"
           onClick={() => setIsSignUpMode(!isSignUpMode)}
-          className="text-emerald-600 hover:text-emerald-700 text-sm font-medium transition-colors"
+          className="text-gray-600 hover:text-indigo-700 text-sm font-medium transition-colors"
         >
           {isSignUpMode
             ? 'Already have an account? Sign In'
-            : "Don't have an account? Sign Up"}
-        </button>
-      </div>
-
-      <div className="mt-3 text-center">
-        <button
-          type="button"
-          onClick={signOut}
-          className="text-red-600 hover:text-red-700 text-sm font-medium transition-colors"
-        >
-          Sign Out
+            : "Don't have an account? Create an Account"}
         </button>
       </div>
     </div>

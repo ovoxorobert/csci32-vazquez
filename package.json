@@ -21,5 +21,9 @@
   "workspaces": [
     "apps/*",
     "packages/*"
-  ]
+  ],
+  "dependencies": {
+    "@swc/core": "^1.15.4",
+    "@tailwindcss/postcss": "^4.1.18"
+  }
 }

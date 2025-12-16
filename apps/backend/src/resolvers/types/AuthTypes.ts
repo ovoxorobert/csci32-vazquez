@@ -1,4 +1,6 @@
-import { Field, ObjectType, InputType, ID } from 'type-graphql'
+import { Field, InputType } from 'type-graphql'
+
+export { UserDTO, AuthPayload } from './CommonAuthTypes'
 
 @InputType()
 export class SignUpInput {
@@ -10,25 +12,4 @@ export class SignUpInput {
 
   @Field(() => String, { nullable: true })
   name?: string
-}
-
-@ObjectType()
-export class UserDTO {
-  @Field(() => ID)
-  user_id!: string
-
-  @Field(() => String, { nullable: true })
-  name?: string | null
-
-  @Field(() => String, { nullable: true })
-  email?: string | null
-}
-
-@ObjectType()
-export class AuthPayload {
-  @Field(() => String)
-  token!: string
-
-  @Field(() => UserDTO)
-  user!: UserDTO
 }

@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client'
-import { seedPermissions } from './seeders/seedPermissions'
-import { seedRoles } from './seeders/seedRoles'
-import { seedUsers } from './seeders/seedUsers'
+import { seedPermissions } from '../src/seeders/seedPermissions'
+import { seedRoles } from '../src/seeders/seedRoles'
+import { seedUsers } from '../src/seeders/seedUsers'
 
 const prisma = new PrismaClient()
 

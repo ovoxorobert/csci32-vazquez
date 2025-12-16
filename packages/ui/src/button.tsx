@@ -1,6 +1,6 @@
 'use client'
 
-import { ReactNode } from 'react'
+import { ReactNode, ButtonHTMLAttributes, AnchorHTMLAttributes } from 'react'
 import { getSizeStyles, Size } from './size'
 import {
   getVariantBackgroundStyles,
@@ -10,23 +10,34 @@ import {
 } from './variant'
 import { getCommonStyles } from './tokens'
 
-interface ButtonProps {
-  children: ReactNode
+interface BaseButtonProps {
   className?: string
-  href?: string
-  type?: string
-  onClick?: () => void
   size?: Size
   variant?: Variant
 }
+
+interface ButtonAsButton
+  extends BaseButtonProps, ButtonHTMLAttributes<HTMLButtonElement> {
+  href?: undefined
+}
+
+interface ButtonAsLink
+  extends BaseButtonProps, AnchorHTMLAttributes<HTMLAnchorElement> {
+  href: string
+  disabled?: boolean
+}
+
+export type ButtonProps = ButtonAsButton | ButtonAsLink
 
 export const Button = ({
   children,
   className,
   href,
-  onClick,
   size = Size.MEDIUM,
   variant = Variant.PRIMARY,
+  onClick,
+  disabled,
+  ...rest
 }: ButtonProps) => {
   const sizeCssClasses = getSizeStyles(size)
   const variantBackgroundCssClasses = getVariantBackgroundStyles(variant)
@@ -34,13 +45,43 @@ export const Button = ({
   const variantButtonTextCssClasses = getVariantButtonTextStyles(variant)
   const commonCssClasses = getCommonStyles()
 
-  const completedCssClasses = `${sizeCssClasses} ${variantBackgroundCssClasses} ${variantOutlineCssClasses} ${variantButtonTextCssClasses} ${className} ${commonCssClasses}`
-  return href ? (
-    <a href={href} className={completedCssClasses}>
-      {children}
-    </a>
-  ) : (
-    <button className={completedCssClasses} onClick={onClick}>
+  const disabledClasses = disabled
+    ? 'opacity-50 cursor-not-allowed pointer-events-none'
+    : 'transition-opacity duration-200'
+
+  const completedCssClasses = [
+    sizeCssClasses,
+    variantBackgroundCssClasses,
+    variantOutlineCssClasses,
+    variantButtonTextCssClasses,
+    commonCssClasses,
+    disabledClasses,
+    className,
+  ]
+    .filter(Boolean)
+    .join(' ')
+
+  if (href) {
+    return (
+      <a
+        href={disabled ? undefined : href}
+        onClick={onClick as any}
+        className={completedCssClasses}
+        aria-disabled={disabled}
+        {...(rest as AnchorHTMLAttributes<HTMLAnchorElement>)}
+      >
+        {children}
+      </a>
+    )
+  }
+
+  return (
+    <button
+      className={completedCssClasses}
+      onClick={onClick as any}
+      disabled={disabled}
+      {...(rest as ButtonHTMLAttributes<HTMLButtonElement>)}
+    >
       {children}
     </button>
   )

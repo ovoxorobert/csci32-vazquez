@@ -56,18 +56,15 @@ export class UserService {
   }
 
   async createUser(params: SignUpInput) {
-    const { email, password, name } = params
+    const { email, password, name } = params //Enforce unique email
 
-    // 1) Enforce unique email
     const existing = await this.prisma.user.findUnique({ where: { email } })
     if (existing) {
       throw new Error('Email already in use')
-    }
+    } //Hash password
 
-    // 2) Hash password
-    const passwordHash = await hashPassword(password)
+    const passwordHash = await hashPassword(password) //Create user (adjust model/field names to your Prisma schema)
 
-    // 3) Create user (adjust model/field names to your Prisma schema)
     const created = await this.prisma.user.create({
       data: {
         email,
@@ -88,9 +85,8 @@ export class UserService {
           },
         },
       },
-    })
+    }) //Sign JWT with standard claims
 
-    // 4) Sign JWT with standard claims
     const token = signToken({
       sub: created.user_id,
       email: created.email,
@@ -100,12 +96,19 @@ export class UserService {
         created.role?.role_permissions.map((p) => p.permission.name) ?? [],
     })
 
-    return { user: created, token }
-  }
-  async authenticateUser(params: { email: string; password: string }) {
-    const { email, password } = params
+    const userForDto = {
+      user_id: created.user_id,
+      name: created.name,
+      email: created.email,
+      role: created.role?.name || null,
+    }
 
-    // 1) Look up by email (select the hash for verification)
+    return { user: userForDto, token }
+  }
+
+  async authenticateUser(params: { email: string; password: string }) {
+    const { email, password } = params //Look up by email (select the hash for verification)
+
     const found = await this.prisma.user.findUnique({
       where: { email },
       select: {
@@ -124,18 +127,22 @@ export class UserService {
       },
     })
 
-    // Prevent user enumeration — use a generic error
     if (!found || !found.passwordHash) {
       throw new Error('Invalid email or password')
-    }
+    } //Compare provided password to stored hash
 
-    // 2) Compare provided password to stored hash
     const ok = await comparePassword(password, found.passwordHash)
     if (!ok) {
       throw new Error('Invalid email or password')
     }
 
-    // 3) Create a token
+    const userForDto = {
+      user_id: found.user_id,
+      name: found.name,
+      email: found.email,
+      role: found.role?.name || null,
+    } //Create a token
+
     const token = signToken({
       sub: found.user_id,
       email: found.email,
@@ -143,10 +150,8 @@ export class UserService {
       role: found.role?.name,
       permissions:
         found.role?.role_permissions.map((p) => p.permission.name) ?? [],
-    })
+    }) //Return safe user shape (omit passwordHash)
 
-    // 4) Return safe user shape (omit passwordHash)
-    const { passwordHash, ...user } = found as any
-    return { user, token }
+    return { user: userForDto, token }
   }
 }

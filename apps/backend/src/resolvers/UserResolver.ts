@@ -1,5 +1,3 @@
-// apps/backend/src/resolvers/UserResolver.ts
-
 import 'reflect-metadata'
 import {
   Resolver,
@@ -63,16 +61,5 @@ export class UserResolver {
     }
     const { user, token } = await userService.authenticateUser(input)
     return { user, token }
-  } // === Field Resolver for Role ===
-
-  @FieldResolver(() => Role, { nullable: true })
-  async role(@Root() user: User, @Ctx() ctx: Context) {
-    if (!user.role_id) {
-      return null
-    }
-
-    return ctx.prisma.role.findUnique({
-      where: { role_id: user.role_id },
-    })
   }
 }

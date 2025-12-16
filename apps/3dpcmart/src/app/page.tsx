@@ -1,26 +1,17 @@
 'use client'
 
-import { useAuth } from '@/hooks/useAuth'
-import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 
-export default function Home() {
-  const { user, isHydrated } = useAuth()
+export default function RootRedirectPage() {
   const router = useRouter()
 
   useEffect(() => {
-    if (isHydrated) {
-      if (user) {
-        router.replace('/dashboard')
-      } else {
-        router.replace('/welcome')
-      }
-    }
-  }, [user, isHydrated, router])
-
+    router.replace('/home')
+  }, [router])
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      Checking Session...
+    <div className="min-h-screen flex items-center justify-center text-lg font-medium text-gray-700">
+      Redirecting to Home...
     </div>
   )
 }

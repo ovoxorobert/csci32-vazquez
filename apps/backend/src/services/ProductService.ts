@@ -3,8 +3,8 @@ import { ListProductsInput } from '@/resolvers/types/ListProductsInput'
 import { Product } from '@/resolvers/types/Product'
 import { SortDirection } from '@/resolvers/types/SortDirection'
 import { ProductSortField } from '@/resolvers/types/ProductSortField'
+import { CreateProductInput } from '../resolvers/types/CreateProductInput'
 
-// Define the dependencies interface
 interface ProductServiceDeps {
   prisma: PrismaClient
 }
@@ -14,8 +14,9 @@ export class ProductService {
 
   constructor(deps: ProductServiceDeps) {
     this.deps = deps
-  } // 1. findOne query implementation (find by ID)
+  }
 
+  //findOne query implementation (find by ID)
   async findById(id: string): Promise<Product | null> {
     return this.deps.prisma.product.findUnique({
       where: { id },
@@ -28,6 +29,7 @@ export class ProductService {
     }) as unknown as Product | null
   }
 
+  //findMany query implementation (list products)
   async findMany(input: ListProductsInput): Promise<Product[]> {
     const { prisma } = this.deps
 
@@ -40,13 +42,47 @@ export class ProductService {
       [sortBy]: sortDirection.toLowerCase(),
     }
 
+    // Add search filter
+    const where = input.search
+      ? {
+          OR: [
+            { name: { contains: input.search, mode: 'insensitive' as const } },
+            {
+              description: {
+                contains: input.search,
+                mode: 'insensitive' as const,
+              },
+            },
+          ],
+        }
+      : {}
+
     return prisma.product.findMany({
       skip,
       take,
       orderBy,
+      where,
       include: {
         reviews: true,
       },
     }) as unknown as Product[]
+  }
+
+  //create mutation implementation (create product)
+  async create(input: CreateProductInput): Promise<Product> {
+    const { prisma } = this.deps
+
+    const sku = `PROD-${Date.now()}`
+
+    const newProduct = await prisma.product.create({
+      data: {
+        ...input,
+        sku: sku,
+      },
+      include: {
+        reviews: true,
+      },
+    })
+    return newProduct as unknown as Product
   }
 }

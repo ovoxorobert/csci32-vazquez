@@ -40,9 +40,6 @@ void fastify.register(autoLoad, {
   forceESM: true,
 })
 
-/**
- * Run the server!
- */
 const start = async () => {
   try {
     await registerGraphQL(fastify)

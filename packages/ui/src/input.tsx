@@ -9,8 +9,10 @@ import {
 } from './variant'
 import { getCommonStyles } from './tokens'
 
-export interface InputProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> {
+export interface InputProps extends Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  'size'
+> {
   variant?: Variant
   size?: Size
   setValue?: (newValue: any) => void

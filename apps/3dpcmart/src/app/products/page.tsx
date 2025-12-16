@@ -1,12 +1,13 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { Search, ChevronDown, Grid } from 'lucide-react'
+import { Search, ChevronDown, Grid, PlusCircle } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { useAuth } from '@/hooks/useAuth'
+import { RoleName } from '@/generated/graphql'
 
-// --- CONFIGURATION ---
 const GRAPHQL_API_URL = 'http://127.0.0.1:4000/api/graphql'
 
-// --- GRAPHQL QUERY ---
 const LIST_PRODUCTS_QUERY = `
   query ListProducts($input: ListProductsInput!) {
     products(input: $input) {
@@ -23,7 +24,6 @@ const LIST_PRODUCTS_QUERY = `
   }
 `
 
-// --- TYPE DEFINITIONS (TypeScript Interfaces) ---
 interface IReview {
   rating: number
 }
@@ -52,6 +52,7 @@ interface IHeaderProps {
  * @param {IReview[]} reviews
  * @returns {number}
  */
+
 const calculateAverageRating = (reviews: IReview[]): number => {
   if (!reviews || reviews.length === 0) return 0
 
@@ -159,7 +160,6 @@ const Header: React.FC<IHeaderProps> = ({
   </div>
 )
 
-// --- MAIN APPLICATION COMPONENT ---
 const ProductCatalogPage = () => {
   const [products, setProducts] = useState<IProduct[]>([])
   const [loading, setLoading] = useState(false)
@@ -174,6 +174,11 @@ const ProductCatalogPage = () => {
   const [skip, setSkip] = useState(0)
   const [take] = useState(8)
   const [hasMore, setHasMore] = useState(true)
+
+  //Auth and Router Hooks
+  const { user } = useAuth()
+  const router = useRouter()
+  const isAdmin = user && user.role === RoleName.Admin
 
   const fetchProducts = async (isNewSearch = false) => {
     setLoading(true)
@@ -191,11 +196,11 @@ const ProductCatalogPage = () => {
           query: LIST_PRODUCTS_QUERY,
           variables: {
             input: {
-              search: search || undefined,
               skip: currentSkip,
               take: take,
               sortBy: sortBy,
               sortDirection: sortDirection,
+              search: search || undefined,
             },
           },
         }),
@@ -327,6 +332,16 @@ const ProductCatalogPage = () => {
           </div>
         )}
       </div>
+
+      {isAdmin && (
+        <button
+          onClick={() => router.push('/admin/products/create')}
+          className="fixed bottom-8 right-8 bg-indigo-600 text-white rounded-full p-4 shadow-2xl hover:bg-indigo-700 transition-transform hover:scale-105 z-20"
+          aria-label="Create New Product"
+        >
+          <PlusCircle className="h-8 w-8" />
+        </button>
+      )}
     </div>
   )
 }

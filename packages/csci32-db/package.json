@@ -2,19 +2,25 @@
   "name": "csci32-db",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
-  "type": "commonjs",
+  "main": "dist/client.js",
+  "module": "dist/client.js",
+  "type": "module",
   "exports": {
     ".": {
-      "require": "./src/client.ts",
-      "types": "./src/client.ts"
+      "types": "./dist/client.d.ts",
+      "import": "./dist/client.js",
+      "require": "./dist/client.js",
+      "default": "./dist/client.js"
     },
     "./permissions": {
-      "require": "./permissions.ts",
-      "types": "./permissions.ts"
+      "types": "./dist/permissions.d.ts",
+      "import": "./dist/permissions.js",
+      "require": "./dist/permissions.js",
+      "default": "./dist/permissions.js"
     }
   },
   "scripts": {
+    "build": "tsc --build",
     "test": "echo \"Error: no test specified\" && exit 1",
     "seed": "prisma db seed"
   },
